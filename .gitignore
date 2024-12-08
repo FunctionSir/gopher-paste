@@ -23,3 +23,8 @@ go.work.sum
 
 # env file
 .env
+
+# For testing
+/pastes
+index.html
+test.conf
