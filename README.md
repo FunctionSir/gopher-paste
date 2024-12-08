@@ -2,7 +2,7 @@
  * @Author: FunctionSir
  * @License: AGPLv3
  * @Date: 2024-12-07 22:09:43
- * @LastEditTime: 2024-12-08 23:04:13
+ * @LastEditTime: 2024-12-08 23:06:19
  * @LastEditors: FunctionSir
  * @Description: -
  * @FilePath: /gopher-paste/README.md
@@ -10,7 +10,7 @@
 # gopher-paste
 
 **!!! WITH ABSOLUTELY NO WARRANTING !!!**  
-**!!! THIS PROJECT IS NOW IN ALPHA STAGE !!!***  
+**!!! THIS PROJECT IS NOW IN ALPHA STAGE !!!**  
 **Current version: 0.0.1 (SatenRuiko).**  
 A special pastebin, written in Go.  
 
