@@ -2,7 +2,7 @@
  * @Author: FunctionSir
  * @License: AGPLv3
  * @Date: 2024-12-07 22:24:35
- * @LastEditTime: 2024-12-20 22:05:38
+ * @LastEditTime: 2024-12-20 23:06:54
  * @LastEditors: FunctionSir
  * @Description: -
  * @FilePath: /gopher-paste/main.go
@@ -356,7 +356,7 @@ func cleaner() {
 				delCnt++
 			}
 		}
-		LogInfoln(fmt.Sprintf("Cleaned %d outdated pastes", delCnt))
+		LogInfoln(fmt.Sprintf("Cleaned %d outdated files", delCnt))
 		time.Sleep(time.Duration(CleanGap) * time.Second)
 	}
 }
