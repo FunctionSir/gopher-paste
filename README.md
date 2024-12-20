@@ -2,7 +2,7 @@
  * @Author: FunctionSir
  * @License: AGPLv3
  * @Date: 2024-12-07 22:09:43
- * @LastEditTime: 2024-12-08 23:06:19
+ * @LastEditTime: 2024-12-20 22:09:38
  * @LastEditors: FunctionSir
  * @Description: -
  * @FilePath: /gopher-paste/README.md
@@ -26,7 +26,7 @@ encoded: Server need to de-base64 your data. "true" or "false".
 data: The actual data.  
 A URL to your paste (line 1), and a UUID as your token to manage the paste (line 2) will be returned.  
 
-#### Limits
+#### Paste Limits
 
 It's related to "expiration".  
 2161 ~ inf: 64KiB max.  
@@ -45,13 +45,24 @@ ct: Content-type you want. Will overwrite the paster's one.
 
 ### Delete something
 
-URL: <https://paste.vioxt.eu.org/[id>]  
+URL: <https://example.org/[id]>  
 Just send a DELETE request. Keys:  
-token: The token gened before used to manage the paste.
+token: The token gened before used to manage the paste.  
 
 ### Modify something
 
-Might (or not) comming soon.
+URL: <https://example.org/[id]>  
+Just send a PUT request. Keys:  
+token: The token gened before used to manage the paste.  
+content-type: Content-type you want to use when someone visit it.  
+encoded: Server need to de-base64 your data. "true" or "false".  
+data: The actual data.  
+
+#### Modify Limits
+
+1. Can't modify the expiration time.  
+2. Data size limits are exactly the same as "creation".  
+P.S. The "last modify" will set to the time you modified it.  
 
 ## How to deploy
 

@@ -2,7 +2,7 @@
  * @Author: FunctionSir
  * @License: AGPLv3
  * @Date: 2024-12-07 22:24:35
- * @LastEditTime: 2024-12-08 22:55:11
+ * @LastEditTime: 2024-12-20 22:05:38
  * @LastEditors: FunctionSir
  * @Description: -
  * @FilePath: /gopher-paste/main.go
@@ -247,6 +247,65 @@ func delPaste(c *gin.Context) {
 	c.String(http.StatusOK, "200 OK")
 }
 
+func modifyPaste(c *gin.Context) {
+	id := c.Param("id")
+	if !isValidId(&id) {
+		c.String(http.StatusBadRequest, "400 Illegal ID")
+		return
+	}
+	token := c.PostForm("token")
+	if len(token) <= 0 {
+		c.String(http.StatusUnauthorized, "401 No Token Provided")
+		return
+	}
+	pasteFile := path.Join(PastesDir, id)
+	pasteMeta := pasteFile + "-metadata"
+	if !FileExists(pasteFile) || !FileExists(pasteMeta) {
+		c.String(http.StatusNotFound, "404 Not Found")
+		return
+	}
+	metadata, err := os.ReadFile(pasteMeta)
+	if err != nil {
+		c.String(http.StatusInternalServerError, "500 Internal Server Error")
+		return
+	}
+	metaValStrs := strings.Split(string(metadata), "\n")
+	correctToken := metaValStrs[META_TOKEN_POS]
+	if correctToken != token {
+		c.String(http.StatusForbidden, "403 Wrong Token")
+		return
+	}
+	exp, _ := strconv.Atoi(metaValStrs[META_EXP_POS])
+	maxSize := getMaxSize(exp)
+	dataStr := c.PostForm("data")
+	if len(dataStr) <= 0 {
+		c.String(http.StatusBadRequest, "400 Empty Payload")
+		return
+	}
+	if len(dataStr) > maxSize {
+		c.String(http.StatusRequestEntityTooLarge, "413 Payload Too Large")
+		return
+	}
+	encodedStr := c.PostForm("encoded")
+	data := []byte(dataStr)
+	if encodedStr == "true" {
+		data, err = base64.StdEncoding.DecodeString(dataStr)
+		if err != nil {
+			c.String(http.StatusBadRequest, "400 Illegal Base64 String")
+			return
+		}
+	}
+	ct := c.PostForm("content-type")
+	if ct == "" {
+		ct = DefaultContentType
+	}
+	lastMod := fmt.Sprintf("%d", time.Now().Unix())
+	os.WriteFile(pasteFile, data, os.ModePerm)
+	metaStr := token + "\n" + ct + "\n" + strconv.Itoa(exp) + "\n" + lastMod + "\n"
+	os.WriteFile(pasteMeta, []byte(metaStr), os.ModePerm)
+	c.String(http.StatusOK, "200 OK")
+}
+
 func cleaner() {
 	for {
 		LogInfoln("Start to clean outdated pastes")
@@ -347,5 +406,6 @@ func main() {
 	router.GET("/:id", getPaste)
 	router.POST("/", createPaste)
 	router.DELETE("/:id", delPaste)
+	router.PUT("/:id", modifyPaste)
 	router.Run(Addr)
 }
